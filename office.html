@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TapVid 液晶挂画 · 办公室空间预览</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tappy-green:#8FD71B; --ink:#0A0A0A; --paper:#fff;
+    --wall-a:#eeebe5; --wall-b:#e4e0d8; --floor-a:#ece1cd; --floor-b:#dcc9a8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow:hidden;background:#d9d5cd;
+    font-family:'Inter','PingFang SC','Noto Sans SC',sans-serif;}
+  #scene{position:fixed;inset:0;}
+  #scene *{ } /* CSS3D children */
+
+  /* ---- 3D room elements ---- */
+  .wall{width:2600px;height:1500px;pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 50% 18%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
+      linear-gradient(180deg,var(--wall-a),var(--wall-b));
+    box-shadow:inset 0 0 240px rgba(120,110,95,.28);}
+  .floor{width:2600px;height:1500px;pointer-events:none;
+    background:linear-gradient(180deg,var(--floor-a),var(--floor-b));
+    box-shadow:inset 0 80px 160px rgba(0,0,0,.12);}
+  /* ---- the LCD digital-art device ---- */
+  /* frameless, futuristic glass panel — no bezel, thin bright rim + green halo */
+  .device{pointer-events:none;position:relative;padding:0;border-radius:16px;
+    animation:halo 4.5s ease-in-out infinite;}
+  .device .screen{display:block;width:432px;height:768px;border:0;border-radius:16px;
+    background:#f3f4f6;pointer-events:none;}
+  .device::after{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.65), inset 0 0 0 1px rgba(255,255,255,.32);
+    background:linear-gradient(155deg, rgba(255,255,255,.14), rgba(255,255,255,0) 32%);}
+  @keyframes halo{
+    0%,100%{box-shadow:0 38px 80px rgba(0,0,0,.30), 0 6px 20px rgba(0,0,0,.18),
+      0 0 0 1.5px rgba(255,255,255,.5), 0 0 30px 2px rgba(143,215,27,.16);}
+    50%{box-shadow:0 44px 90px rgba(0,0,0,.32), 0 6px 20px rgba(0,0,0,.18),
+      0 0 0 1.5px rgba(255,255,255,.62), 0 0 50px 6px rgba(143,215,27,.30);}}
+
+  /* ---- UI overlay ---- */
+  #ui{position:fixed;left:26px;top:26px;z-index:10;width:360px;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(14px);
+    border:1px solid rgba(0,0,0,.08);border-radius:20px;padding:22px 22px 18px;
+    box-shadow:0 20px 50px rgba(0,0,0,.16);}
+  #ui h1{font-family:'Plus Jakarta Sans';font-weight:800;font-size:22px;color:var(--ink);
+    display:flex;align-items:center;gap:10px;letter-spacing:-.2px;}
+  #ui h1 .d{width:14px;height:14px;border-radius:50%;background:var(--tappy-green);
+    box-shadow:0 0 0 5px rgba(143,215,27,.2);}
+  #ui .sub{margin-top:7px;font-size:13.5px;line-height:1.5;color:#555;}
+  #ui .hint{margin-top:12px;font-size:12.5px;color:#777;
+    background:rgba(0,0,0,.04);border-radius:10px;padding:9px 11px;}
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+<div id="scene"></div>
+
+<div id="ui">
+  <h1><span class="d"></span> TapVid LCD Art</h1>
+  <div class="sub">Office space preview — every piece on the wall is a <b>live, real-time dynamic poster</b>, swappable anytime.</div>
+  <div class="hint">Drag = look around · Scroll = zoom · Right-drag = pan</div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* available dynamic posters (the LCD content library) */
+const POSTERS = [
+  { key:'wheat',  name:'Wheat',  file:'TapVid-cover-wheat.html' },
+  { key:'zongzi', name:'Zongzi', file:'duanwu.html' },
+];
+const DEFAULTS = [0, 1];   // frame A -> wheat, frame B -> zongzi
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 1, 12000);
+camera.position.set(140, 85, 2200);
+
+const renderer = new CSS3DRenderer();
+renderer.setSize(innerWidth, innerHeight);
+document.getElementById('scene').appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(70, -210, 250);
+controls.enableDamping = true; controls.dampingFactor = 0.08;
+controls.minDistance = 720; controls.maxDistance = 3200;
+controls.minPolarAngle = 0.55*Math.PI*0.5;     // keep roughly eye-level
+controls.maxPolarAngle = 0.62*Math.PI;
+controls.minAzimuthAngle = -Math.PI/2.4;
+controls.maxAzimuthAngle =  Math.PI/2.4;
+controls.autoRotate = true; controls.autoRotateSpeed = 0.6;
+
+/* helper to wrap a DOM node as a 3D object */
+function obj(el, x, y, z, rx=0, ry=0){
+  const o = new CSS3DObject(el);
+  o.position.set(x, y, z); o.rotation.x = rx; o.rotation.y = ry;
+  scene.add(o); return o;
+}
+function div(cls){ const d=document.createElement('div'); d.className=cls; return d; }
+
+/* ---- room ---- */
+const wall = div('wall');
+obj(wall, 0, 60, 0);
+
+const floor = div('floor');
+obj(floor, 0, -690, 750, -Math.PI/2);
+
+/* ---- soft furnishings (flat vector props, Google-studio / chill vibe) ---- */
+function prop(svg, w, h, x, y, z, ry=0, rx=0){
+  const d = document.createElement('div');
+  d.style.width = w+'px'; d.style.height = h+'px'; d.style.pointerEvents='none';
+  d.innerHTML = svg;
+  return obj(d, x, y, z, rx, ry);
+}
+const SVG = {
+  rug:`<svg viewBox="0 0 1200 760" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="20" width="1160" height="720" rx="40" fill="#e6e7e4"/>
+    <rect x="70" y="70" width="1060" height="620" rx="28" fill="none" stroke="#d7d9d4" stroke-width="6"/></svg>`,
+  desk:`<svg viewBox="0 0 460 360" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <rect x="34" y="250" width="392" height="20" rx="6" fill="#dcc6a4"/>
+    <rect x="58" y="270" width="16" height="92" rx="4" fill="#b59c78"/><rect x="386" y="270" width="16" height="92" rx="4" fill="#b59c78"/>
+    <rect x="252" y="206" width="14" height="40" fill="#3a3f45"/><rect x="232" y="244" width="54" height="8" rx="3" fill="#3a3f45"/>
+    <rect x="176" y="120" width="166" height="104" rx="8" fill="#23262b"/>
+    <rect x="184" y="128" width="150" height="88" rx="4" fill="#eef2f5"/>
+    <rect x="192" y="136" width="42" height="72" rx="3" fill="#dfe7ee"/>
+    <rect x="242" y="140" width="84" height="11" rx="3" fill="#8FD71B"/>
+    <rect x="242" y="158" width="70" height="8" rx="3" fill="#cdd6dd"/><rect x="242" y="172" width="78" height="8" rx="3" fill="#cdd6dd"/>
+    <rect x="242" y="186" width="50" height="8" rx="3" fill="#cdd6dd"/>
+    <rect x="190" y="256" width="120" height="13" rx="4" fill="#cfd3d8"/><circle cx="330" cy="262" r="7" fill="#cfd3d8"/>
+    <rect x="120" y="232" width="26" height="22" rx="4" fill="#8FD71B"/>
+    <path d="M146 236 q11 0 11 9 t-11 9" fill="none" stroke="#8FD71B" stroke-width="4"/></svg>`,
+  chair:`<svg viewBox="0 0 200 360" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <path d="M40 312 L100 286 L160 312" stroke="#3a3f45" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="318" r="9" fill="#2b2f34"/><circle cx="100" cy="328" r="9" fill="#2b2f34"/><circle cx="160" cy="318" r="9" fill="#2b2f34"/>
+    <rect x="94" y="240" width="12" height="50" fill="#555b61"/>
+    <rect x="52" y="214" width="96" height="30" rx="12" fill="#3a3f45"/>
+    <rect x="42" y="188" width="14" height="40" rx="6" fill="#4a5158"/><rect x="144" y="188" width="14" height="40" rx="6" fill="#4a5158"/>
+    <rect x="62" y="104" width="76" height="124" rx="24" fill="#4a5158"/><rect x="72" y="116" width="56" height="100" rx="18" fill="#5b636b"/></svg>`,
+  monstera:`<svg viewBox="0 0 240 460" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <path d="M70 360 L170 360 L158 450 L82 450 Z" fill="#d8b48a"/><rect x="64" y="346" width="112" height="22" rx="6" fill="#e3c39d"/>
+    <path d="M120 360 C108 300 96 250 88 212" stroke="#5f8a3a" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M120 360 C136 300 152 252 170 222" stroke="#5f8a3a" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <g fill="#4f9a3e"><ellipse cx="80" cy="190" rx="56" ry="40" transform="rotate(-25 80 190)"/>
+    <ellipse cx="172" cy="200" rx="54" ry="38" transform="rotate(20 172 200)"/><ellipse cx="118" cy="138" rx="58" ry="44"/></g>
+    <g stroke="#dfe6d2" stroke-width="4" opacity=".55"><line x1="80" y1="162" x2="80" y2="218"/><line x1="118" y1="104" x2="118" y2="178"/><line x1="172" y1="174" x2="172" y2="228"/></g></svg>`,
+  snake:`<svg viewBox="0 0 180 520" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <path d="M52 410 L128 410 L120 500 L60 500 Z" fill="#cfd3d8"/>
+    <g fill="#5a9e3f"><path d="M90 415 C80 300 78 180 70 70 C66 40 96 40 94 72 C92 180 100 300 96 415 Z"/>
+    <path d="M90 415 C100 320 110 210 124 110 C130 78 156 92 146 120 C126 220 112 320 100 415 Z"/>
+    <path d="M90 415 C84 330 70 240 50 150 C42 120 22 138 34 162 C58 250 76 330 84 415 Z"/></g></svg>`,
+  credenza:`<svg viewBox="0 0 1020 250" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="30" width="980" height="160" rx="14" fill="#e7ded2" stroke="#d8cdbd" stroke-width="2"/>
+    <line x1="350" y1="40" x2="350" y2="180" stroke="#d3c8b6" stroke-width="3"/><line x1="680" y1="40" x2="680" y2="180" stroke="#d3c8b6" stroke-width="3"/>
+    <circle cx="332" cy="110" r="6" fill="#9b8e78"/><circle cx="368" cy="110" r="6" fill="#9b8e78"/>
+    <circle cx="662" cy="110" r="6" fill="#9b8e78"/><circle cx="698" cy="110" r="6" fill="#9b8e78"/>
+    <rect x="60" y="185" width="14" height="60" rx="5" fill="#9b8060" transform="rotate(8 67 215)"/>
+    <rect x="946" y="185" width="14" height="60" rx="5" fill="#9b8060" transform="rotate(-8 953 215)"/></svg>`,
+  books:`<svg viewBox="0 0 140 90" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="62" width="100" height="20" rx="3" fill="#8FD71B"/><rect x="28" y="42" width="86" height="20" rx="3" fill="#cdd6dd"/>
+    <rect x="34" y="22" width="74" height="20" rx="3" fill="#e7b15a"/></svg>`,
+  bush:`<svg viewBox="0 0 120 110" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="40" r="30" fill="#6fae3e"/><circle cx="42" cy="50" r="22" fill="#5f9a34"/><circle cx="80" cy="48" r="20" fill="#7bbf48"/>
+    <path d="M40 74 h40 l-7 32 h-26 Z" fill="#d8b48a"/></svg>`,
+  pendant:`<svg viewBox="0 0 120 340" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <line x1="60" y1="0" x2="60" y2="252" stroke="#9a9a9a" stroke-width="4"/>
+    <path d="M30 252 q30 -42 60 0 Z" fill="#2b2b2b"/><ellipse cx="60" cy="254" rx="30" ry="9" fill="#ffe9a8"/>
+    <ellipse cx="60" cy="266" rx="42" ry="15" fill="#ffe9a8" opacity=".22"/></svg>`,
+};
+const FURN = [
+  ['credenza',1020, 250,    0,-565, 140],
+  ['books',    140,  90, -360,-395, 150],
+  ['bush',     120, 110,  360,-385, 150],
+  ['rug',     1200, 760,  120,-686, 980, 0, -Math.PI/2],
+  ['monstera', 240, 460, -600,-460, 860],
+  ['snake',    180, 520,  640,-430, 840],
+  ['desk',     460, 360, -250,-510, 900],
+  ['chair',    200, 360, -250,-512,1090],
+  ['desk',     460, 360,  330,-510, 930],
+  ['chair',    200, 360,  330,-512,1120],
+  ['pendant',  120, 340, -120, 690, 520],
+  ['pendant',  120, 340,  320, 690, 520],
+];
+FURN.forEach(p => prop(SVG[p[0]], p[1], p[2], p[3], p[4], p[5], p[6]||0, p[7]||0));
+
+/* ---- two LCD devices ---- */
+const frames = [];
+function makeDevice(file){
+  const d = div('device');
+  const iframe = document.createElement('iframe');
+  iframe.className = 'screen'; iframe.src = file;
+  iframe.setAttribute('scrolling','no');
+  d.appendChild(iframe);
+  return { d, iframe };
+}
+const POS_X = 320;
+for (let i=0;i<2;i++){
+  const p = POSTERS[DEFAULTS[i]];
+  const dev = makeDevice(p.file);
+  obj(dev.d, i===0 ? -POS_X : POS_X, 60, 18);
+  frames.push(dev);
+}
+
+/* stop the gentle auto-orbit as soon as the user grabs the scene */
+controls.addEventListener('start', ()=>{ controls.autoRotate = false; });
+
+addEventListener('resize', ()=>{
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+(function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+</script>
+</body>
+</html>

@@ -1,17 +1,24 @@
-# Animation Technique: the grow → ripen → bloom recipe
+# Animation Technique: building the central motion
 
-This is the procedural pattern behind the TapVid dynamic poster. It's general:
-"wheat" is just one subject. The same machine — *elements that grow from a base,
-shift color when mature, then sprout a cluster of letters at their tip, all swaying
-in a shared wind field, on a timed loop* — visualizes almost any "something coming
-alive out of text" concept (trees, waves, fireworks, sound bars, a skyline, a
-flower). Read this before editing `assets/template.html`.
+This is the procedural toolkit behind the TapVid dynamic poster. It is a set of
+*reusable mechanisms* — a looping clock, a build/reveal, a shared wind field, an
+optional color treatment, and a letter-detail ("bloom") layer — that you **compose to
+fit the subject**. The "wheat" build is just one worked example.
+
+**Infer the motion from intent.** Before reaching for any mechanism, reason about what
+the concept is *trying to express* and let that decide how it moves — a wave flows and
+crashes, fireworks burst and fall, a skyline assembles upward, sound bars pulse, data
+streams across. Don't force every subject through the same grow-then-settle arc. The
+mechanisms below are building blocks, not a mandatory sequence: use only the ones the
+concept needs (e.g. many subjects need no color shift at all). The only constants are
+the brand chrome and that fine detail is rendered as **letters**. Read this before
+editing `assets/template.html`.
 
 ## Table of contents
 1. The loop clock (state machine)
-2. Element model & growth
+2. Element model & build/reveal
 3. Wind field (organic motion)
-4. Color journey (ripening)
+4. Color treatment (optional)
 5. The letter "bloom" (the brand texture)
 6. Vertical layout budget + collision math
 7. The ShinyText CTA
@@ -22,8 +29,9 @@ flower). Read this before editing `assets/template.html`.
 
 One global timeline drives everything via `millis()`:
 
-- `t = constrain((millis()-t0)/GROW_TIME, 0, 1)` — growth progress 0→1.
-- When `t>=1`, start `colorStart`; `colorProg` ramps 0→1 over `COLOR_TIME` (ripening).
+- `t = constrain((millis()-t0)/GROW_TIME, 0, 1)` — build/reveal progress 0→1.
+- When `t>=1`, start `colorStart`; `colorProg` ramps 0→1 over `COLOR_TIME` (an
+  **optional** color shift — skip it if the concept reads better in a steady color).
 - When `colorProg>=1`, start `bloomStart`; after `BLOOM_DELAY`, each element spawns
   its letter cluster, which fades in over `BLOOM_FADE_MS`.
 - After `BLOOM_FADE_MS + HOLD_TIME`, call `resetCycle()` (new `t0`, rebuild the
@@ -34,7 +42,7 @@ BLOOM_FADE_MS≈1100, HOLD_TIME≈5200`. The restart is a clean snap (acceptable
 looping poster). The background is the CSS gradient; the sketch calls `clear()` each
 frame so the gradient shows through.
 
-## 2. Element model & growth
+## 2. Element model & build/reveal
 
 The subject is built from N "elements" (e.g. wheat stalks). Each element is densely
 tiled from many tiny rectangles ("joints") so it can grow smoothly and bend.
@@ -56,12 +64,15 @@ and the tip moves most**: `sway = wind * WIND_AMP * pow(tt, SWAY_EXP)` where
 `tt = j/TOTAL_DOTS`. Each element's own `phase` desynchronizes the field into a
 natural wave. `WIND_SPEED≈0.0016, WIND_AMP≈30, SWAY_EXP≈2.2`.
 
-## 4. Color journey (ripening)
+## 4. Color treatment (optional)
 
-Each element interpolates `lerpColor(green, gold, colorProg)` — so the whole field
-shifts color the instant growth finishes. Use a palette recipe from
-`references/brand.md`. The two colors per element are themselves random lerps within
-a pair, which gives depth instead of a flat fill.
+If the concept calls for a color change, each element interpolates
+`lerpColor(colorA, colorB, colorProg)` — so the whole field shifts together when the
+build finishes. Pick a recipe from `references/brand.md` **by what the concept means**
+(green-dominant by default; warm green→gold only for warm/harvest subjects). Many
+subjects need no shift — a steady green field is perfectly on-brand. The two colors per
+element are themselves random lerps within a pair, which gives depth instead of a flat
+fill.
 
 ## 5. The letter "bloom" — the brand texture
 
@@ -128,14 +139,14 @@ per-element draw so the geometry reads as the user's subject. Patterns:
   bloom rides the crest; wind amplitude high, phases offset left→right for a
   traveling wave.
 - **Fireworks / burst:** elements radiate from a point; growth = radius; bloom at the
-  far end; color ripens to Signal Purple/gold sparks.
+  far end; color shifts to gold / bright-green sparks.
 - **Sound bars / equalizer:** vertical bars on a grid, heights driven by
   `sin(time + i)`; bloom optional; very "motion/video" coded.
 - **Skyline / mountains:** elements are columns of varying height forming a silhouette;
   bloom = windows/stars as letters.
 
 Rule of thumb: change *position + growth direction + how tips connect*; reuse the
-joint-tiling, wind, ripen, and bloom helpers. Always render the fine detail as
+joint-tiling, wind, color, and bloom helpers. Always render the fine detail as
 letters so it stays TapVid.
 
 ### Figurative subjects (a face, a mascot, a product) via silhouette letter-fill
@@ -145,15 +156,15 @@ When the subject is a recognizable *figure* rather than abstract strands, swap t
 simple regions (circles/ellipses/triangles + point-in-shape tests), scatter dense
 letter-particles inside on a jittered grid, assign each a reveal `order` so the
 figure *assembles* over `GROW_TIME`, sway each lightly (edge particles more) for a
-breathing feel, and `lerpColor(base, mature, colorProg)` to ripen. Add a ragged
-**fringe** of particles just outside the silhouette so it reads as fluffy/organic
-rather than a hard mask.
+breathing feel, and optionally `lerpColor(base, mature, colorProg)` to shift color.
+Add a ragged **fringe** of particles just outside the silhouette so it reads as
+fluffy/organic rather than a hard mask.
 
 Recognizability comes from a few **landmark features**, not the blob: make them
 *solid* (don't thin them) and *high-contrast*. For an animal: clear triangular
-ears poking above the head, two eyes (great place for the Signal-Purple accent),
-a small nose/mouth, and a couple of whisker rows. Reveal the eyes slightly later
-so they "pop." Keep the subject's body fill lighter/mid-grey and the accents dark
+ears poking above the head, two eyes (a good place for a Tappy-Green or Ink-Black
+accent), a small nose/mouth, and a couple of whisker rows. Reveal the eyes slightly
+later so they "pop." Keep the subject's body fill lighter/mid-grey and the accents dark
 — that value contrast is what makes it legible on the pale background (don't render
 a light subject in near-white; it vanishes). You can still pair the figure with a
 strand-based element (e.g. rising steam that blooms a word) so the "motion out of
@@ -161,18 +172,22 @@ letters" story stays.
 
 The canonical worked example to study first is the **wheat field** that ships as the
 default in `assets/template.html`: stalks tied at the base and fanned at the top,
-growing up under the wind field, ripening green→gold, then sprouting dense
-letter-heads that spell "tapvid." It's the cleanest illustration of the full
-grow→ripen→bloom machine — start there, then reshape it toward your subject.
+growing up under the wind field, shifting green→gold, then sprouting dense
+letter-heads that spell "tapvid." It's a clean illustration of *composing* the
+mechanisms — build + wind + an optional color shift + letter detail — into one
+motion. Start there, then reshape it toward your subject and choose the motion that
+fits what it means.
 
 When a reference image is given, map: its main mass → where you cluster bases; its
 implied motion → wind direction/amp and growth direction; its focal accents → where
-the brightest bloom/Signal-Purple goes; its palette → the nearest brand recipe.
+the brightest bloom / Tappy-Green accent goes; its palette → the nearest brand recipe
+(green-led, no purple).
 
 ## 9. Verifying
 
-Because of the loop, a random screenshot usually catches mid-growth. To inspect the
-payoff frame: temporarily set `GROW_TIME=2000, COLOR_TIME=1000, HOLD_TIME=30000`,
-reload, screenshot the fully-bloomed state, confirm subject legibility + brand
-colors + no overlap + the CTA resolves to `https://tapvid.ai/`, then **restore real
-timing**. Serve over `http://` (a local static server), not `file://`.
+Because of the loop, a random screenshot usually catches a mid-build frame. To inspect
+the payoff frame: temporarily set `GROW_TIME=2000, COLOR_TIME=1000, HOLD_TIME=30000`,
+reload, screenshot the fully settled / resolved state, confirm subject legibility +
+brand colors (green-led, no purple) + no overlap + the CTA resolves to
+`https://tapvid.ai/`, then **restore real timing**. Serve over `http://` (a local
+static server), not `file://`.

@@ -22,36 +22,45 @@ Core palette:
 
 | Token | Hex | Use |
 |---|---|---|
-| Tappy Green | `#8FD71B` | Primary brand color, the "alive/ripe" green |
-| Ink Black | `#0A0A0A` | Main text, logo outline, primary button |
+| Tappy Green | `#8FD71B` | Primary brand color, the "alive" green — also the **accent / highlight** |
+| Ink Black | `#0A0A0A` | Main text, logo outline, primary button, high-contrast accent |
 | Paper White | `#FFFFFF` | Main surface |
-| Signal Purple | `#5B4FFF` | **Accent only** — highlights, interactive hotspots |
+
+Posters are **green-dominant**. Green is both the field color and the highlight; use
+Ink Black for contrast. Do **not** introduce purple or blue into posters — the accent
+that used to be Signal Purple is now carried by Tappy Green / Ink Black.
 
 Surface / landing gradient (use as the poster background):
 
-- Mist Green `#F0FAE0` (top) → Mist Purple `#EFEEFF` (bottom)
-- `background: linear-gradient(180deg, #F0FAE0 0%, #EFEEFF 100%);`
+- Mist Green `#F0FAE0` (top) → Mist Light `#FAFEF2` (bottom) — a soft green-to-near-white
+  wash, no purple
+- `background: linear-gradient(180deg, #F0FAE0 0%, #FAFEF2 100%);`
 
 Neutrals: Gray 900 `#0A0A0A`, Gray 700 `#404040` (secondary text), Gray 500
 `#737373`, Gray 300 `#D4D4D4`, Gray 100 `#F5F5F5`, Gray 50 `#FAFAFA`.
 
-Mascot-only (do **not** put in UI): Tappy Blue `#4F5BFF`.
-
 ### Palette recipes for the animation
 
-These are the established "journeys" — reuse or adapt, don't invent off-brand hues:
+**Pick the color from the concept, not from a default.** Read the prompt (and the
+uploaded reference image, if any) and choose the recipe that matches what the visual
+is *trying to say* — its mood, subject, and energy. Green is the dominant family; only
+shift colors when the meaning calls for it (e.g. warmth/harvest, energy, calm). Don't
+invent off-brand hues, and **don't use purple or blue**.
 
-- **Green → Gold ripening** (warm, harvest, "content matures into video"):
-  stems green `#4A7023`→`#74af37` ripen to gold `#c89c40`→`#DAA520`; letter-bloom
+These are the established green-led "journeys" — reuse or adapt:
+
+- **All-green (fresh, energetic — the default, most on-brand):** stems
+  `#4f7a1e`→`#6fae2e` brightening to `#8FD71B`→`#a8e84f`; letter detail pool in Tappy
+  Green + Ink Black: `["#8FD71B","#a8e84f","#6fae2e","#0A0A0A","#74af37"]`.
+- **Green → Gold (warm, harvest — only when the concept is warm/"ripening"):**
+  stems green `#4A7023`→`#74af37` shift to gold `#c89c40`→`#DAA520`; letter detail
   pool `["#e88c00","#f5b000","#ffe78a"]`.
-- **Green → Brand-green** (fresh, energetic, most on-brand): stems
-  `#4f7a1e`→`#6fae2e` ripen to `#8FD71B`→`#a8e84f`; letter-bloom in Signal Purple +
-  Tappy Green + Ink Black: `["#5B4FFF","#5B4FFF","#8FD71B","#0A0A0A","#8b82ff"]`.
-- **Purple accent** is great for the *bloom/highlight* (it's the "interactive
-  hotspot" color) but should not dominate the whole field.
+- **Green accent / highlight:** the brightest detail and any "hotspot" should be
+  Tappy Green `#8FD71B`, with Ink Black `#0A0A0A` for contrast. Highlights stay green.
 
-Pick the recipe that fits the concept's mood, or derive a new one *within* the
-palette (e.g. a cool wave could go Ink → Signal Purple → Tappy Green).
+Color shifts are **optional** — many concepts read best in a steady green field. If you
+do derive a new recipe, stay *within* the palette and let the concept decide (e.g. a
+calm/cool subject could go Ink Black → Gray 500 → Tappy Green; a warm one Green → Gold).
 
 ## Typography
 
