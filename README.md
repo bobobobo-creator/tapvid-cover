@@ -12,6 +12,7 @@ Self-contained TapVid brand **dynamic posters** (real-time, looping 9:16 key vis
 | 3D Showcase | Orbit a design studio with posters as LCD wall art | https://bobobobo-creator.github.io/tapvid-cover/office.html |
 | Wheat | Letter wheat grows, ripens, then blooms | https://bobobobo-creator.github.io/tapvid-cover/TapVid-cover-wheat.html |
 | Zongzi | Minimalist zongzi with natural physics and drifting smoke | https://bobobobo-creator.github.io/tapvid-cover/duanwu.html |
+| SigmaZ Orb | A letter-sphere assembles in a dark porthole, ripening ink→blue→green | https://bobobobo-creator.github.io/tapvid-cover/TapVid-cover-sigmaz.html |
 
 After every `git push` to `main`, GitHub Pages republishes automatically (about 1 to 2 minutes; do a hard refresh).
 
@@ -21,6 +22,7 @@ After every `git push` to `main`, GitHub Pages republishes automatically (about 
 index.html                 Navigation home (live thumbnail cards)
 TapVid-cover-wheat.html     Wheat-themed dynamic poster
 duanwu.html                 Zongzi-themed dynamic poster (Dragon Boat Festival, minimalist physics)
+TapVid-cover-sigmaz.html    SigmaZ-themed dynamic poster (letter-sphere in a porthole, ink→blue→green)
 office.html                 3D office showcase (Three.js CSS3DRenderer)
 tapvid-dynamic-poster/      Reusable skill that generates these dynamic posters
   ├─ SKILL.md
