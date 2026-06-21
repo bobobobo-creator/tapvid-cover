@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TapVid — Dynamic Posters & LCD Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tappy-green:#8FD71B; --ink:#0A0A0A; --paper:#fff; --signal:#5B4FFF;
+    --mist-green:#F0FAE0; --mist-purple:#EFEEFF; --g700:#404040; --g500:#737373; --g300:#D4D4D4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{min-height:100%;background:linear-gradient(180deg,var(--mist-green),var(--mist-purple));
+    font-family:'Inter','PingFang SC','Noto Sans SC',sans-serif;color:var(--ink);
+    padding:64px 24px 80px;}
+  .wrap{max-width:1080px;margin:0 auto;}
+
+  header{text-align:center;margin-bottom:48px;}
+  .lockup{display:inline-flex;align-items:center;gap:14px;
+    font-family:'Plus Jakarta Sans';font-weight:800;font-size:30px;letter-spacing:-.5px;}
+  .lockup .dot{width:26px;height:26px;border-radius:50%;background:var(--tappy-green);
+    box-shadow:0 0 0 7px rgba(143,215,27,.18);}
+  header h1{font-family:'Plus Jakarta Sans';font-weight:800;font-size:clamp(34px,6vw,60px);
+    letter-spacing:-1.5px;line-height:1.05;margin-top:28px;}
+  header p{margin-top:16px;font-size:17px;color:var(--g700);line-height:1.6;}
+  header .tag{display:inline-block;margin-top:18px;font-size:13px;font-weight:600;color:#2c7a12;
+    background:rgba(143,215,27,.18);border-radius:999px;padding:7px 16px;}
+
+  .row{display:grid;gap:24px;}
+  .posters{grid-template-columns:1fr 1fr;margin-top:24px;}
+  @media(max-width:680px){.posters{grid-template-columns:1fr;}}
+
+  .card{display:block;text-decoration:none;color:inherit;background:var(--paper);
+    border:1px solid rgba(0,0,0,.06);border-radius:22px;overflow:hidden;
+    box-shadow:0 16px 40px rgba(20,30,20,.10);
+    transition:transform .26s cubic-bezier(.2,.8,.2,1),box-shadow .26s ease;}
+  .card:hover{transform:translateY(-6px);box-shadow:0 28px 60px rgba(20,30,20,.16);}
+
+  .thumb{position:relative;width:100%;overflow:hidden;background:#eef1ee;}
+  .thumb.wide{padding-top:56%;}
+  .thumb.tall{padding-top:170%;}
+  .thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;}
+  .thumb .live{position:absolute;top:12px;left:12px;z-index:2;font-size:11px;font-weight:700;
+    letter-spacing:.5px;color:#2c7a12;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);
+    border-radius:999px;padding:4px 10px;display:flex;align-items:center;gap:6px;}
+  .thumb .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--tappy-green);
+    box-shadow:0 0 8px var(--tappy-green);}
+
+  .meta{padding:20px 22px 24px;}
+  .meta .t{font-family:'Plus Jakarta Sans';font-weight:700;font-size:21px;display:flex;
+    align-items:center;justify-content:space-between;gap:10px;}
+  .meta .t .arr{font-size:18px;color:var(--g500);transition:transform .2s ease;}
+  .card:hover .meta .t .arr{transform:translate(3px,-3px);color:var(--ink);}
+  .meta .d{margin-top:8px;font-size:14.5px;color:var(--g700);line-height:1.55;}
+
+  footer{margin-top:48px;text-align:center;font-size:13px;color:var(--g500);line-height:1.7;}
+  footer a{color:var(--g700);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="lockup"><span class="dot"></span>Tapvid</div>
+    <h1>Dynamic Posters<br>& LCD Showcase</h1>
+    <p>Self-contained, real-time animated key visuals built in the TapVid design language —<br>
+       and an interactive 3D office that hangs them as swappable LCD wall art.</p>
+    <span class="tag">Anything to Motion Video · tapvid.ai</span>
+  </header>
+
+  <!-- featured: 3D office -->
+  <div class="row">
+    <a class="card" href="office.html">
+      <div class="thumb wide"><span class="live">LIVE 3D</span><iframe src="office.html" loading="lazy" scrolling="no"></iframe></div>
+      <div class="meta">
+        <div class="t">3D Office Showcase <span class="arr">↗</span></div>
+        <div class="d">An interactive design-studio room where the posters hang as live LCD digital-art frames. Drag to look around, scroll to zoom.</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- the two posters -->
+  <div class="row posters">
+    <a class="card" href="TapVid-cover-wheat.html">
+      <div class="thumb tall"><span class="live">LIVE</span><iframe src="TapVid-cover-wheat.html" loading="lazy" scrolling="no"></iframe></div>
+      <div class="meta">
+        <div class="t">Wheat <span class="arr">↗</span></div>
+        <div class="d">A field of letter-wheat grows, ripens green→gold, and blooms the word “tapvid”. 9:16 looping poster.</div>
+      </div>
+    </a>
+    <a class="card" href="duanwu.html">
+      <div class="thumb tall"><span class="live">LIVE</span><iframe src="duanwu.html" loading="lazy" scrolling="no"></iframe></div>
+      <div class="meta">
+        <div class="t">Zongzi (端午) <span class="arr">↗</span></div>
+        <div class="d">Minimalist green zongzi with white string cuts, floating with natural physics over drifting smoke. 9:16 looping poster.</div>
+      </div>
+    </a>
+  </div>
+
+  <footer>
+    Built with p5.js · Three.js (CSS3DRenderer). Each tile above is the real page running live.<br>
+    Source &amp; generator skill: <a href="https://github.com/bobobobo-creator/tapvid-cover">github.com/bobobobo-creator/tapvid-cover</a>
+  </footer>
+</div>
+</body>
+</html>
