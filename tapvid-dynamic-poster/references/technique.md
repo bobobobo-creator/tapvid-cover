@@ -1,12 +1,12 @@
 # Animation Technique: building the central motion
 
 This is the procedural toolkit behind the TapVid dynamic poster. It is a set of
-*reusable mechanisms* — a looping clock, a build/reveal, a shared wind field, an
-optional color treatment, and a letter-detail ("bloom") layer — that you **compose to
+*reusable mechanisms*, a looping clock, a build/reveal, a shared wind field, an
+optional color treatment, and a letter-detail ("bloom") layer, that you **compose to
 fit the subject**. The "wheat" build is just one worked example.
 
 **Infer the motion from intent.** Before reaching for any mechanism, reason about what
-the concept is *trying to express* and let that decide how it moves — a wave flows and
+the concept is *trying to express* and let that decide how it moves, a wave flows and
 crashes, fireworks burst and fall, a skyline assembles upward, sound bars pulse, data
 streams across. Don't force every subject through the same grow-then-settle arc. The
 mechanisms below are building blocks, not a mandatory sequence: use only the ones the
@@ -29,9 +29,9 @@ editing `assets/template.html`.
 
 One global timeline drives everything via `millis()`:
 
-- `t = constrain((millis()-t0)/GROW_TIME, 0, 1)` — build/reveal progress 0→1.
+- `t = constrain((millis()-t0)/GROW_TIME, 0, 1)`, build/reveal progress 0→1.
 - When `t>=1`, start `colorStart`; `colorProg` ramps 0→1 over `COLOR_TIME` (an
-  **optional** color shift — skip it if the concept reads better in a steady color).
+  **optional** color shift, skip it if the concept reads better in a steady color).
 - When `colorProg>=1`, start `bloomStart`; after `BLOOM_DELAY`, each element spawns
   its letter cluster, which fades in over `BLOOM_FADE_MS`.
 - After `BLOOM_FADE_MS + HOLD_TIME`, call `resetCycle()` (new `t0`, rebuild the
@@ -67,14 +67,14 @@ natural wave. `WIND_SPEED≈0.0016, WIND_AMP≈30, SWAY_EXP≈2.2`.
 ## 4. Color treatment (optional)
 
 If the concept calls for a color change, each element interpolates
-`lerpColor(colorA, colorB, colorProg)` — so the whole field shifts together when the
+`lerpColor(colorA, colorB, colorProg)`, so the whole field shifts together when the
 build finishes. Pick a recipe from `references/brand.md` **by what the concept means**
 (green-dominant by default; warm green→gold only for warm/harvest subjects). Many
-subjects need no shift — a steady green field is perfectly on-brand. The two colors per
+subjects need no shift, a steady green field is perfectly on-brand. The two colors per
 element are themselves random lerps within a pair, which gives depth instead of a flat
 fill.
 
-## 5. The letter "bloom" — the brand texture
+## 5. The letter "bloom", the brand texture
 
 This is what makes it unmistakably TapVid: the tip of each element sprouts a **dense
 cluster of letters** (in `JetBrains Mono`) that fade in. The letters can spell a word
@@ -94,7 +94,7 @@ Mechanics (`makeDenseBloom` / `drawDenseBloom`):
   not random, so it reads.
 
 To change the texture to a different subject, you mostly change *where elements are*
-and *what shape they grow in* (§8) — the bloom code is reusable as the "detail" layer
+and *what shape they grow in* (§8), the bloom code is reusable as the "detail" layer
 on any tip/edge.
 
 ## 6. Vertical layout budget + collision math
@@ -120,7 +120,7 @@ The whole `1080×1920` stage is scaled to the viewport with
 The label uses a vanilla port of React Bits' **ShinyText**: a `background-clip:text`
 gradient (`linear-gradient(120deg, #b5b5b5 0 35%, #fff 50%, #b5b5b5 65% 100%)`,
 `background-size:200% auto`) animated `background-position: 150% → -50%` over 2s
-linear, infinite — a white highlight sweeping a grey base. The pill is an Ink-Black
+linear, infinite, a white highlight sweeping a grey base. The pill is an Ink-Black
 `<a href="https://tapvid.ai">` with hover-lift + arrow-nudge + press, and a subtle
 ambient shadow pulse. Keep it an anchor and keep `pointer-events:auto`.
 
@@ -165,7 +165,7 @@ Recognizability comes from a few **landmark features**, not the blob: make them
 ears poking above the head, two eyes (a good place for a Tappy-Green or Ink-Black
 accent), a small nose/mouth, and a couple of whisker rows. Reveal the eyes slightly
 later so they "pop." Keep the subject's body fill lighter/mid-grey and the accents dark
-— that value contrast is what makes it legible on the pale background (don't render
+- that value contrast is what makes it legible on the pale background (don't render
 a light subject in near-white; it vanishes). You can still pair the figure with a
 strand-based element (e.g. rising steam that blooms a word) so the "motion out of
 letters" story stays.
@@ -174,7 +174,7 @@ The canonical worked example to study first is the **wheat field** that ships as
 default in `assets/template.html`: stalks tied at the base and fanned at the top,
 growing up under the wind field, shifting green→gold, then sprouting dense
 letter-heads that spell "tapvid." It's a clean illustration of *composing* the
-mechanisms — build + wind + an optional color shift + letter detail — into one
+mechanisms, build + wind + an optional color shift + letter detail, into one
 motion. Start there, then reshape it toward your subject and choose the motion that
 fits what it means.
 

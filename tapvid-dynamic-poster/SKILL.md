@@ -3,13 +3,13 @@ description: >-
   Generate an animated 9:16 "dynamic poster" (a single self-contained HTML file
   using p5.js) in the TapVid brand design language, driven by a user prompt or a
   reference image. The poster renders a procedural, looping animation that
-  visualizes the user's concept — built out of moving letters/text particles
-  (TapVid's ASCII-art motif) in the brand palette and type — with the TapVid logo,
+  visualizes the user's concept, built out of moving letters/text particles
+  (TapVid's ASCII-art motif) in the brand palette and type, with the TapVid logo,
   a Display headline, and a shimmering "Start Creating" button that links to
   tapvid.ai. Use this skill whenever the user wants a TapVid poster, cover,
-  thumbnail, key visual, hero animation, social/launch graphic, "动态海报", "封面",
+  thumbnail, key visual, hero animation, social or launch graphic,
   or asks to turn a prompt or reference image into a TapVid-branded animated
-  visual — even if they don't say "poster" explicitly. Also use it to restyle an
+  visual, even if they don't say "poster" explicitly. Also use it to restyle an
   existing visual into the TapVid look or to change the poster's subject.
 ---
 
@@ -18,7 +18,7 @@ description: >-
 Turn a user's prompt or reference image into an **animated 9:16 poster** that looks
 and feels like TapVid: one self-contained `.html` file, p5.js for the motion, the
 brand's gradient + type + logo as fixed chrome, and a procedural animation in the
-center that visualizes whatever the user described — rendered out of **moving
+center that visualizes whatever the user described, rendered out of **moving
 letters** (the brand's ASCII-art element) in the brand colors.
 
 The output is always a poster that (a) is on-brand, (b) animates in a satisfying
@@ -28,8 +28,8 @@ loop, and (c) has a working **Start Creating → https://tapvid.ai** button.
 
 The power of this skill is that the *brand chrome and the hard parts* (9:16 sizing,
 gradient, logo, type scale, the shimmer CTA, the looping motion clock, the wind
-field) are already solved in the template. **You design the central animation —
-both its form and its motion** — so it matches the user's concept. This keeps every
+field) are already solved in the template. **You design the central animation -
+both its form and its motion**, so it matches the user's concept. This keeps every
 poster correct and lets you focus creative energy where it matters.
 
 - **Fixed (keep from the template):** canvas `1080×1920` auto-scaled to fit, the
@@ -37,22 +37,22 @@ poster correct and lets you focus creative energy where it matters.
   the `Plus Jakarta Sans` headline + tagline, the ShinyText CTA wired to
   `https://tapvid.ai`, and the timed loop clock.
 - **You design:** the subject metaphor, the procedural geometry that builds it, the
-  color treatment, and **the motion that brings it to life — inferred from what the
-  concept is trying to say, not forced into one fixed pattern** — see
+  color treatment, and **the motion that brings it to life, inferred from what the
+  concept is trying to say, not forced into one fixed pattern**, see
   `references/technique.md`.
 
 ## Workflow
 
 1. **Read the references first.** Load `references/brand.md` (colors, type, logo,
    copy, CTA rules) and `references/technique.md` (the animation recipe and all
-   tunable parameters). These are the source of truth — don't reinvent brand values
+   tunable parameters). These are the source of truth, don't reinvent brand values
    from memory.
 
-2. **Interpret the input into a visual concept — subject *and* motion.**
+2. **Interpret the input into a visual concept, subject *and* motion.**
    - *Prompt only:* extract a concrete subject and a metaphor for it. TapVid is
      "Anything → Explainer/Motion Video," so the strongest concepts make *something
      come alive out of letters/text*. **Reason about how this particular concept
-     naturally wants to move, and let the motion follow that logic** — don't impose
+     naturally wants to move, and let the motion follow that logic**, don't impose
      a single canned animation on every subject. A wave flows and crashes; fireworks
      of glyphs burst and fall; a city skyline assembles upward; sound bars pulse to
      a beat; data streams across the frame; a crowd gathers or disperses; a sprout
@@ -79,12 +79,12 @@ poster correct and lets you focus creative energy where it matters.
 
 5. **Place vertically with clear zones.** The composition must breathe: logo +
    headline + tagline in the top third, the animation filling the middle band, the
-   CTA anchored at the bottom — with gaps so nothing overlaps. `references/technique.md`
+   CTA anchored at the bottom, with gaps so nothing overlaps. `references/technique.md`
    gives the exact vertical budget and the collision math (the moving letters can
-   extend *beyond* each element's bounds — e.g. above its tip — which is the easy
+   extend *beyond* each element's bounds, e.g. above its tip, which is the easy
    thing to get wrong).
 
-6. **Verify visually — do not skip this.** The animation has a timed cycle, so a
+6. **Verify visually, do not skip this.** The animation has a timed cycle, so a
    single screenshot usually catches a transitional frame. Serve the file and capture
    the *fully resolved / settled* state of the loop:
    - Start a local server from the output dir and open the file in a preview/browser
@@ -109,7 +109,7 @@ poster correct and lets you focus creative energy where it matters.
   chrome and that the texture is built from letters.
 - **Letters are the medium.** The signature TapVid texture is type-as-particles
   (ASCII art) in `JetBrains Mono`. Whatever the subject, render its detail out of
-  characters, not generic dots — that's what ties any concept to the brand.
+  characters, not generic dots, that's what ties any concept to the brand.
 - **Palette discipline.** Use the documented tokens. Green↔gold is the brand's
   established color pairing; Signal Purple is a *highlight/accent*, never the whole
   field. Use color to support the concept, but don't introduce off-brand hues just
@@ -120,11 +120,11 @@ poster correct and lets you focus creative energy where it matters.
 
 ## Files in this skill
 
-- `references/brand.md` — TapVid colors, type scale, logo SVG, voice, copy, CTA.
+- `references/brand.md`, TapVid colors, type scale, logo SVG, voice, copy, CTA.
   Read before writing any poster.
-- `references/technique.md` — the procedural-animation recipe: the looping motion
+- `references/technique.md`, the procedural-animation recipe: the looping motion
   clock, the wind field, the letter/particle math, vertical layout budget, the
   ShinyText CTA, and how to reason about and build a fitting motion for a new
   subject. Read before editing the template.
-- `assets/template.html` — the ready-to-run scaffold (brand chrome fixed, with one
+- `assets/template.html`, the ready-to-run scaffold (brand chrome fixed, with one
   worked example animation included). Copy and replace the ANIMATION MODULE.
