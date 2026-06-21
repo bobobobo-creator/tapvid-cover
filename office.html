@@ -99,6 +99,11 @@ controls.minAzimuthAngle = -Math.PI/2.4;
 controls.maxAzimuthAngle =  Math.PI/2.4;
 controls.autoRotate = true; controls.autoRotateSpeed = 0.6;
 
+/* hide the info panel when embedded (e.g. the index thumbnail) for a clean preview */
+if (window.self !== window.top){
+  const ui = document.getElementById('ui'); if (ui) ui.style.display = 'none';
+}
+
 /* helper to wrap a DOM node as a 3D object */
 function obj(el, x, y, z, rx=0, ry=0){
   const o = new CSS3DObject(el);
